@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warung Gorengan Pinggiran</title>
+    <style>
+        :root {
+            --primary: #FFA500;
+            --secondary: #3E2723;
+            --light: #F5F5F5;
+            --dark: #212121;
+            --success: #4CAF50;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #FFF9C4;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: var(--secondary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tagline {
+            font-style: italic;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .products-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .product-image {
+            height: 160px;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 1rem;
+        }
+
+        .product-title {
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--secondary);
+        }
+
+        .product-price {
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .product-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+        }
+
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background-color: var(--secondary);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        .quantity-input {
+            width: 40px;
+            text-align: center;
+            border: 1px solid #ddd;
+            height: 30px;
+            margin: 0 5px;
+        }
+
+        .add-to-cart {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .add-to-cart:hover {
+            background-color: #FF8C00;
+        }
+
+        .cart-container {
+            position: fixed;
+            top: 0;
+            right: -350px;
+            width: 350px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+            transition: right 0.3s ease;
+            z-index: 1000;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .cart-container.show {
+            right: 0;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .close-cart {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark);
+        }
+
+        .cart-items {
+            margin-bottom: 1rem;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .cart-item-info {
+            flex: 1;
+        }
+
+        .cart-item-name {
+            font-weight: 500;
+        }
+
+        .cart-item-price {
+            color: var(--primary);
+            font-size: 0.9rem;
+        }
+
+        .cart-item-quantity {
+            display: flex;
+            align-items: center;
+        }
+
+        .cart-item-quantity button {
+            width: 25px;
+            height: 25px;
+            border: none;
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+
+        .cart-item-quantity span {
+            margin: 0 10px;
+        }
+
+        .cart-total {
+            font-weight: bold;
+            font-size: 1.1rem;
+            text-align: right;
+            margin: 1rem 0;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 0.8rem;
+            background-color: var(--success);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .checkout-btn:hover {
+            background-color: #388E3C;
+        }
+
+        .cart-icon {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            width: 60px;
+            height: 60px;
+            background-color: var(--secondary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+        }
+
+        .cart-counter {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--primary);
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        footer {
+            background-color: var(--secondary);
+            color: white;
+            text-align: center;
+            padding: 1rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .cart-container {
+                width: 300px;
+            }
+
+            .products-container {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Warung Gorengan Pinggiran</h1>
+        <p class="tagline">Gorengan Nikmat, Harga Pas di Kantong</p>
+    </header>
+
+    <main>
+        <div class="products-container">
+            <!-- Tempe Goreng -->
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="web gorengan/tempe.jpg" alt="Tempe goreng garing berwarna kecoklatan dengan tekstur renyah di luar dan lembut di dalam">
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Tempe Goreng</div>
+                    <span class="product-price">Rp 3.000</span>
+                    <div class="product-actions">
+                        <div class="quantity-control">
+                            <button class="quantity-btn minus">-</button>
+                            <input type="number" class="quantity-input" value="0" min="0">
+                            <button class="quantity-btn plus">+</button>
+                        </div>
+                        <button class="add-to-cart">Tambah</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pisang Goreng -->
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="web gorengan/pisang-goreng.webp" alt="Pisang goreng berwarna keemasan dengan lapisan tepung krispi, disajikan hangat">
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Pisang Goreng</div>
+                    <span class="product-price">Rp 5.000</span>
+                    <div class="product-actions">
+                        <div class="quantity-control">
+                            <button class="quantity-btn minus">-</button>
+                            <input type="number" class="quantity-input" value="0" min="0">
+                            <button class="quantity-btn plus">+</button>
+                        </div>
+                        <button class="add-to-cart">Tambah</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Risol -->
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="web gorengan/risol.jpg" alt="Risol goreng berwarna kecoklatan dengan isian wortel dan daging ayam">
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Risol Mayo</div>
+                    <span class="product-price">Rp 5.000</span>
+                    <div class="product-actions">
+                        <div class="quantity-control">
+                            <button class="quantity-btn minus">-</button>
+                            <input type="number" class="quantity-input" value="0" min="0">
+                            <button class="quantity-btn plus">+</button>
+                        </div>
+                        <button class="add-to-cart">Tambah</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bakwan -->
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="bakwan.jpg" alt="Bakwan sayur berwarna kuning kecoklatan dengan potongan wortel dan daun bawang">
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Bakwan</div>
+                    <span class="product-price">Rp 3.000</span>
+                    <div class="product-actions">
+                        <div class="quantity-control">
+                            <button class="quantity-btn minus">-</button>
+                            <input type="number" class="quantity-input" value="0" min="0">
+                            <button class="quantity-btn plus">+</button>
+                        </div>
+                        <button class="add-to-cart">Tambah</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tahu Goreng -->
+            <div class="product-card">
+                <div class="product-image">
+                    <img src="web gorengan/tahu goreng.webp" alt="Tahu goreng berwarna kuning kecoklatan dengan tekstur krispi di luar dan lembut di dalam">
+                </div>
+                <div class="product-info">
+                    <div class="product-title">Tahu Goreng</div>
+                    <span class="product-price">Rp 2.500</span>
+                    <div class="product-actions">
+                        <div class="quantity-control">
+                            <button class="quantity-btn minus">-</button>
+                            <input type="number" class="quantity-input" value="0" min="0">
+                            <button class="quantity-btn plus">+</button>
+                        </div>
+                        <button class="add-to-cart">Tambah</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Cart Icon -->
+    <div class="cart-icon">
+        🛒
+        <div class="cart-counter">0</div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div class="cart-container">
+        <div class="cart-header">
+            <div class="cart-title">Keranjang Belanja</div>
+            <button class="close-cart">×</button>
+        </div>
+        <div class="cart-items">
+            <!-- Cart items will be dynamically added here -->
+        </div>
+        <div class="cart-total">Total: Rp 0</div>
+        <button class="checkout-btn">Checkout</button>
+    </div>
+
+    <footer>
+        <p>Warung Gorengan Pak Jono - Jl. Gorengan No. 123 - Buka setiap hari 14.00-21.00</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const products = [
+                { id: 1, name: 'Tempe Goreng', price: 3000, image: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/eda950ac-dc29-4118-8737-2b55ce81a9d3.png' },
+                { id: 2, name: 'Pisang Goreng', price: 5000, image: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/a43910bb-efb8-463a-9f22-f98c1d02ce65.png' },
+                { id: 3, name: 'Risol Mayo', price: 5000, image: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2b70b502-6c53-47c4-9592-11b05bf52914.png' },
+                { id: 4, name: 'Bakwan', price: 3000, image: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/10c70ce1-8453-48de-b34b-83bac966a3f2.png' },
+                { id: 5, name: 'Tahu Goreng', price: 2500, image: 'https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/96322720-03c8-45f6-8968-09a2642461d0.png' }
+            ];
+
+            let cart = [];
+            const cartIcon = document.querySelector('.cart-icon');
+            const cartCounter = document.querySelector('.cart-counter');
+            const cartContainer = document.querySelector('.cart-container');
+            const cartItemsContainer = document.querySelector('.cart-items');
+            const cartTotalElement = document.querySelector('.cart-total');
+            const closeCartBtn = document.querySelector('.close-cart');
+            const checkoutBtn = document.querySelector('.checkout-btn');
+
+            // Toggle cart visibility
+            cartIcon.addEventListener('click', function() {
+                cartContainer.classList.add('show');
+            });
+
+            closeCartBtn.addEventListener('click', function() {
+                cartContainer.classList.remove('show');
+            });
+
+            // Initialize quantity controls
+            document.querySelectorAll('.quantity-control').forEach(control => {
+                const minusBtn = control.querySelector('.minus');
+                const plusBtn = control.querySelector('.plus');
+                const input = control.querySelector('.quantity-input');
+                const addToCartBtn = control.closest('.product-actions').querySelector('.add-to-cart');
+
+                minusBtn.addEventListener('click', () => {
+                    if (parseInt(input.value) > 0) {
+                        input.value = parseInt(input.value) - 1;
+                    }
+                });
+
+                plusBtn.addEventListener('click', () => {
+                    input.value = parseInt(input.value) + 1;
+                });
+
+                addToCartBtn.addEventListener('click', () => {
+                    const quantity = parseInt(input.value);
+                    if (quantity > 0) {
+                        const productCard = control.closest('.product-card');
+                        const productId = parseInt(productCard.dataset.id || 
+                            Array.from(document.querySelectorAll('.product-card')).indexOf(productCard) + 1);
+                        
+                        const productTitle = productCard.querySelector('.product-title').textContent;
+                        const productPrice = parseInt(productCard.querySelector('.product-price').textContent.replace('Rp ', '').replace('.', ''));
+                        
+                        addToCart(productId, productTitle, productPrice, quantity);
+                        input.value = 0;
+                    }
+                });
+            });
+
+            // Add to cart function
+            function addToCart(id, name, price, quantity) {
+                const existingItem = cart.find(item => item.id === id);
+
+                if (existingItem) {
+                    existingItem.quantity += quantity;
+                } else {
+                    cart.push({ id, name, price, quantity });
+                }
+
+                updateCart();
+                cartContainer.classList.add('show');
+            }
+
+            // Update cart display
+            function updateCart() {
+                cartItemsContainer.innerHTML = '';
+                
+                let total = 0;
+                let totalItems = 0;
+
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+                    totalItems += item.quantity;
+
+                    const cartItemElement = document.createElement('div');
+                    cartItemElement.className = 'cart-item';
+                    cartItemElement.innerHTML = `
+                        <div class="cart-item-info">
+                            <div class="cart-item-name">${item.name}</div>
+                            <div class="cart-item-price">Rp ${item.price.toLocaleString('id-ID')}</div>
+                        </div>
+                        <div class="cart-item-quantity">
+                            <button class="decrease-item" data-id="${item.id}">-</button>
+                            <span>${item.quantity}</span>
+                            <button class="increase-item" data-id="${item.id}">+</button>
+                        </div>
+                        <div class="cart-item-total">Rp ${itemTotal.toLocaleString('id-ID')}</div>
+                    `;
+                    cartItemsContainer.appendChild(cartItemElement);
+                });
+
+                // Add event listeners to quantity buttons in cart
+                document.querySelectorAll('.decrease-item').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        const item = cart.find(item => item.id === id);
+                        if (item.quantity > 1) {
+                            item.quantity -= 1;
+                        } else {
+                            cart = cart.filter(item => item.id !== id);
+                        }
+                        updateCart();
+                    });
+                });
+
+                document.querySelectorAll('.increase-item').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        const item = cart.find(item => item.id === id);
+                        item.quantity += 1;
+                        updateCart();
+                    });
+                });
+
+                cartTotalElement.textContent = `Total: Rp ${total.toLocaleString('id-ID')}`;
+                cartCounter.textContent = totalItems;
+                cartCounter.style.display = totalItems > 0 ? 'flex' : 'none';
+            }
+
+            // Checkout button
+            checkoutBtn.addEventListener('click', function() {
+                if (cart.length > 0) {
+                    alert(`Terima kasih telah berbelanja di Warung Gorengan Pak Jono!\nTotal belanja Anda: Rp ${calculateTotal().toLocaleString('id-ID')}`);
+                    cart = [];
+                    updateCart();
+                    cartContainer.classList.remove('show');
+                } else {
+                    alert('Keranjang belanja Anda masih kosong.');
+                }
+            });
+
+            // Calculate total
+            function calculateTotal() {
+                return cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            }
+
+            // Assign product IDs to cards
+            document.querySelectorAll('.product-card').forEach((card, index) => {
+                card.dataset.id = index + 1;
+            });
+        });
+    </script>
+</body>
+</html>
+
